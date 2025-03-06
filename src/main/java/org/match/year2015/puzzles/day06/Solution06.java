@@ -1,6 +1,14 @@
 package org.match.year2015.puzzles.day06;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Solution06 {
 
@@ -17,6 +25,7 @@ public class Solution06 {
      *      - could have an outer array of arrays, of size 1000.
      *      - each inner array is of booleans, each of size 1000.
      *      - booleans are all initialized to false
+     *      - or just use ints. 0 is false, 1 is true.
      *      - the locations of the lights correlate to the indexes of the arrays
      *          - (0) [0 1 2 3 4 5 6 7 8 9]
      *          - (1) [0 1 2 3 4 5 6 7 8 9]
@@ -37,15 +46,27 @@ public class Solution06 {
      *
      */
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws FileNotFoundException {
 
         // get input file
-
+        File file = new File("src/main/java/org/match/year2015/inputs/input06");
 
         // parse input file into a list of strings
+        List<String> input = new ArrayList<>();
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            String line = "";
+            while ((line = reader.readLine()) != null) {
+                input.add(line);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
 
         // pass input file into solution method
+
+        int answer = countLights(input);
 
     }
 
@@ -55,22 +76,59 @@ public class Solution06 {
         // initialize count
         int count = 0;
 
-
         // set up data structure
+        int[][] grid = new int[1000][1000];
+
+        // visualize the grid
+//        System.out.println("begin");
+//        for (int[] innerArray : grid) {
+//            for(int i : innerArray) {
+//                System.out.print(i + " ");
+//            }
+//            System.out.println();
+//        }
+//        System.out.println("end");
+
+        // define some regex for parsing the numbers out
+        Pattern patternAction = Pattern.compile("toggle|on|off");
+        Pattern patternX = Pattern.compile("\\d{1,3},");
+        Pattern patternY = Pattern.compile(",\\d{1,3}");
 
 
         // iterate over input
         for (String line : input) {
 
+            // set up matchers
+            Matcher matchAction = patternAction.matcher(line);
+            Matcher matchX = patternX.matcher(line);
+            Matcher matchY = patternY.matcher(line);
+
+
             // parse action (on/off/toggle -> updates position truth values)
+            String action = "";
+            if (matchAction.find()) action = matchAction.group();
 
-            // get starting y coordinate
 
-            // get ending y coordinate
+            // gonna get sloppy with the input validations/null checks because in this case I know I can trust it
 
-            // get starting x coordinate
 
-            // get ending x coordinate
+            // get starting and ending x coordinates
+            int startingX = 0;
+            int endingX = 0;
+            if (matchX.find()) startingX = Integer.parseInt(matchX.group().replace(",",""));
+            if (matchX.find()) endingX = Integer.parseInt(matchX.group().replace(",",""));
+            System.out.println("X: " + startingX + " " + endingX);
+
+            // get starting and ending y coordinates
+            int startingY = 0;
+            int endingY = 0;
+            if (matchY.find()) startingY = Integer.parseInt(matchY.group().replace(",",""));
+            if (matchY.find()) endingY = Integer.parseInt(matchY.group().replace(",",""));
+            System.out.println("Y: " + startingY + " " + endingY);
+
+
+            // okay, so now I have my action stored in a string, and my starting and ending x and y coordinates
+            // now on to the actual logic
 
             // execute action on range
 
