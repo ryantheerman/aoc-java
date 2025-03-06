@@ -80,8 +80,8 @@ public class Solution05_2 {
         int count = 0;
 
         // define patterns
-        Pattern patternPairs = Pattern.compile("");
-        Pattern patternSandwich = Pattern.compile("");
+        Pattern patternPairs = Pattern.compile("(..).*\\1");
+        Pattern patternSandwich = Pattern.compile("(.).\\1");
 
 
         // iterate over input
@@ -90,6 +90,17 @@ public class Solution05_2 {
             // define matchers
             Matcher matchPairs = patternPairs.matcher(line);
             Matcher matchSandwich = patternSandwich.matcher(line);
+
+            // debugging the regex pattern
+//            System.out.println(line);
+//            int matchPairsCount = 0;
+//            if (matchPairs.find()) {
+//                matchPairsCount = matchPairs.groupCount();
+//                for (int i = 1; i <= matchPairs.groupCount(); i++) {
+//                    System.out.println(matchPairs.group(i));
+//                    count++;
+//                }
+//            }
 
             // check conditions
             if (matchPairs.find() && matchSandwich.find()) {
