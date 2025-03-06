@@ -38,7 +38,9 @@ public class Solution05_2 {
 
         System.out.println("# of nice lines: " + answer);
 
+        answer = countNicerStrings(input);
 
+        System.out.println("# of nicer lines: " + answer);
     }
 
     private static int countNiceStrings(List<String> input) {
@@ -64,5 +66,36 @@ public class Solution05_2 {
             }
         }
         return niceCount;
+    }
+
+    /**
+     *  PART 2 RULES...
+     *      - must contain 2 pairs any 2 letters with no overlap
+     *      - AND must contain 2 of the same character with another character in
+     *        between (can be the same character...
+     *        so efe fires, and so does aaa).
+     */
+
+    private static int countNicerStrings(List<String> input) {
+        int count = 0;
+
+        // define patterns
+        Pattern patternPairs = Pattern.compile("");
+        Pattern patternSandwich = Pattern.compile("");
+
+
+        // iterate over input
+        for (String line : input) {
+
+            // define matchers
+            Matcher matchPairs = patternPairs.matcher(line);
+            Matcher matchSandwich = patternSandwich.matcher(line);
+
+            // check conditions
+            if (matchPairs.find() && matchSandwich.find()) {
+                count++;
+            }
+        }
+        return count;
     }
 }
