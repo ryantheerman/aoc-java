@@ -49,7 +49,7 @@ public class Solution05_2 {
         // set up regex patterns
         Pattern patternOmissions = Pattern.compile("(ab|cd|pq|xy)");
         Pattern patternDoubles = Pattern.compile(".*(.)\\1.*");
-        Pattern patternVowels = Pattern.compile("[aeiou]");
+        Pattern patternVowels = Pattern.compile(".*[aeiou].*[aeiou].*[aeiou].*");
 
         for (String line : input) {
 
@@ -58,34 +58,9 @@ public class Solution05_2 {
             Matcher matchOmissions = patternOmissions.matcher(line);
             Matcher matchVowels = patternVowels.matcher(line);
 
-            // stop processing line if ab, cd, pq, or xy  occur in the string
-            if (matchOmissions.find()) {
-                continue;
-            }
-
-            // debugging the regex pattern
-//            int matchDoublesCount = 0;
-//            if (matchDoubles.find()) {
-//                matchDoublesCount = matchDoubles.groupCount();
-//                for (int i = 1; i <= matchDoubles.groupCount(); i++) {
-//                    System.out.println(matchDoubles.group(i));
-//                    niceCount++;
-//                }
-//            }
-
-            // figure out if there are any doubles
-            if (matchDoubles.find()) {
-                // increment niceCount if 3 vowels exist in string
-                int vowelCount = 0;
-                for (char ch : line.toCharArray()) {
-                    if (matchVowels.find()) {
-                        vowelCount++;
-                        if (vowelCount == 3) {
-                            niceCount++;
-                            break;
-                        }
-                    }
-                }
+            // check conditions
+            if (!matchOmissions.find() && matchDoubles.find() && matchVowels.find()) {
+                niceCount++;
             }
         }
         return niceCount;
