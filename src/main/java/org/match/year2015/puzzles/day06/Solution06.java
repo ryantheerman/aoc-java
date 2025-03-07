@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -68,6 +69,8 @@ public class Solution06 {
 
         int answer = countLights(input);
 
+        System.out.println("lights on: " + answer);
+
     }
 
 
@@ -117,33 +120,61 @@ public class Solution06 {
             int endingX = 0;
             if (matchX.find()) startingX = Integer.parseInt(matchX.group().replace(",",""));
             if (matchX.find()) endingX = Integer.parseInt(matchX.group().replace(",",""));
-            System.out.println("X: " + startingX + " " + endingX);
 
             // get starting and ending y coordinates
             int startingY = 0;
             int endingY = 0;
             if (matchY.find()) startingY = Integer.parseInt(matchY.group().replace(",",""));
             if (matchY.find()) endingY = Integer.parseInt(matchY.group().replace(",",""));
-            System.out.println("Y: " + startingY + " " + endingY);
 
 
             // okay, so now I have my action stored in a string, and my starting and ending x and y coordinates
             // now on to the actual logic
 
             // execute action on range
+            /**
+             *
+             *  There are 2 pieces here. 2 considerations.
+             *      1. specify the size of the rectangle
+             *      2. iterate over that rectangle
+             *          a. if action == on -> set values at all indexes to 1
+             *          b. if action == off -> set values at all indexes to 0
+             *          c. if action == toggle
+             *              -> set all 1 values to 0
+             *              -> set all 0 values to 1
+             *
+             */
 
+            // iterate over the outer array
+            for (int i = startingY; i <= endingY; i++) {
+                // iterate over each inner array for the ith outer array
+                for (int j = startingX; j <= endingX; j++) {
+                    switch (action) {
+                        case "on":
+                            grid[i][j] = 1;
+                        case "off":
+                            grid[i][j] = 0;
+                        case "toggle":
+                            if (grid[i][j] == 0) {
+                                grid[i][j] = 1;
+                            } else {
+                                grid[i][j] = 0;
+                            }
+                    }
+                }
+            }
         }
 
         // iterate over data structure and count the trues
-
+        for (int i = 0; i < grid.length; i++) {
+            for (int j = 0; j < grid[i].length; j++) {
+                if (grid[i][j] == 1) {
+                    count++;
+                }
+            }
+        }
 
         return count;
     }
-
-
-
-
-
-
 
 }
