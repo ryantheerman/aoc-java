@@ -78,6 +78,7 @@ public class Solution06 {
 
         // initialize count
         int count = 0;
+        int brightness = 0;
 
         // set up data structure
         int[][] grid = new int[1000][1000];
@@ -151,15 +152,16 @@ public class Solution06 {
                 for (int j = startingX; j <= endingX; j++) {
                     switch (action) {
                         case "on":
-                            grid[i][j] = 1;
+                            grid[i][j]++;
+                            break;
                         case "off":
-                            grid[i][j] = 0;
-                        case "toggle":
-                            if (grid[i][j] == 0) {
-                                grid[i][j] = 1;
-                            } else {
-                                grid[i][j] = 0;
+                            if (grid[i][j] > 0) {
+                                grid[i][j]--;
                             }
+                            break;
+                        case "toggle":
+                            grid[i][j] += 2;
+                            break;
                     }
                 }
             }
@@ -168,13 +170,15 @@ public class Solution06 {
         // iterate over data structure and count the trues
         for (int i = 0; i < grid.length; i++) {
             for (int j = 0; j < grid[i].length; j++) {
+                brightness += grid[i][j];
                 if (grid[i][j] == 1) {
                     count++;
                 }
             }
         }
 
-        return count;
+//        return count;
+        return brightness;
     }
 
 }
