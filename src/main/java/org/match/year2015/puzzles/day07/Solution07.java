@@ -97,18 +97,61 @@ public class Solution07 {
             inputMap.put(splitLine[1].trim(), splitLine[0].trim());
         }
 
-        while (true) {
-            // interatively check the map
-            Scanner scan = new Scanner(System.in);
+//        while (true) {
+//            // interatively check the map
+//            Scanner scan = new Scanner(System.in);
 
-            System.out.print("please select a key: " );
-            String userInput = scan.nextLine();
+//            System.out.print("please select a key: " );
+//            String userInput = scan.nextLine();
 
-            System.out.println("value: " + inputMap.get(userInput));
+//            System.out.println("value: " + inputMap.get(userInput));
+//        }
+
+        // Java provides bitwise operators for AND, OR, XOR, NOT, LEFT SHIFT, and RIGHT SHIFT
+        // will use these operators to calculate the outputs
+
+        // what data will be passed into the calculate function? -> the value of the map. the calculate function
+        // returns the value of the map key.
+
+        // the calculate function will be called recursively. I want the value of a, but in my input, the
+        // calculation for a is simply the value of lx. I need the value of lx, so the calculate function will
+        // check if the values in the map are digits or variables.
+        // if digits, use them for the calculation. if variables, call the calculation function on them until
+        // they resolve to digits.
+
+        answer = calculate(inputMap.get("il"));
+
+        return answer;
+    }
+
+    // AND and OR contain 2 values for calculation
+    // NOT, RSHIFT, LSHIFT, and direct assignment contain 1 value for calculation (for the shift operations we can think of the
+    // distance of the shift as part of the operation itself)
+
+    private static int calculate(String calculation) {
+        int output = 0;
+
+        // parse the input (store operator and digit(s)/variable(s)
+
+        // if operator does not contain AND or OR -> prepare for 1 value
+            // it will be a NOT, a SHIFT, or a direct assignment
+        if (!calculation.contains("AND") && !calculation.contains("OR")) {
+            System.out.println(calculation);
         }
+            // if value is a number, calculate output
+            // if value is a variable, call the calculate function on it to arrive at a number.
 
 
+        // else prepare for 2 values
+            // it will be an AND or an OR
+        else {
+            System.out.println(calculation);
+        }
+            // if both values are numbers, calculate output
+            // if value a is a variable, call the calculate function on it to arrive at a number.
+            // if value b is a variable, call the calculate function on it to arrive at a number.
 
-//        return answer;
+
+        return output;
     }
 }
