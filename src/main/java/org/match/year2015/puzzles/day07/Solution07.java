@@ -5,6 +5,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Solution07 {
 
@@ -24,7 +26,7 @@ public class Solution07 {
      *      binary result of the logic being applied to the input bits.
      *
      *      so 0010 AND 0011 = 0010, because 0 AND 0 is 0, 0 AND 0 is 0,
-     *      1 and 1 is 1, and 0 AND 1 is 0.
+     *      1 AND 1 is 1, and 0 AND 1 is 0.
      *
      *      need to execute all the ops in order to determine what the final value
      *      of a is.
@@ -37,7 +39,7 @@ public class Solution07 {
      *      i don't necessarily need to start parsing the input at the number
      *      inputs, but those are the only lines I can use to start CALCULATING.
      *
-     *      I basically need to solve for the right side of each equation.
+     *      I basically need to solve for the left side of each equation.
      *      I can create a function to do that based on which bitwise operator
      *      is referenced.
      *      but most variables are undefined, so i'll need to call the solve
@@ -71,7 +73,7 @@ public class Solution07 {
         // pass list to workhorse function and return answer
         int answer = solveForA(input);
 
-        System.out.println(answer);
+        System.out.println("answer = " + answer);
     }
 
     private static int solveForA(List<String> input) {
@@ -97,8 +99,8 @@ public class Solution07 {
             inputMap.put(splitLine[1].trim(), splitLine[0].trim());
         }
 
+          // interatively check the map
 //        while (true) {
-//            // interatively check the map
 //            Scanner scan = new Scanner(System.in);
 
 //            System.out.print("please select a key: " );
@@ -119,39 +121,123 @@ public class Solution07 {
         // if digits, use them for the calculation. if variables, call the calculation function on them until
         // they resolve to digits.
 
-        answer = calculate(inputMap.get("il"));
+        answer = calculate(inputMap.get("a"), inputMap);
 
         return answer;
     }
 
-    // AND and OR contain 2 values for calculation
-    // NOT, RSHIFT, LSHIFT, and direct assignment contain 1 value for calculation (for the shift operations we can think of the
-    // distance of the shift as part of the operation itself)
+    // AND, OR, RSHIFT, and LSHIFT contain 2 values for calculation
+    // NOT and direct assignment contain 1 value for calculation
 
-    private static int calculate(String calculation) {
-        int output = 0;
+    private static int calculate(String key, Map<String, String> inputMap) {
+
+        String calculation = inputMap.get(key);
+
+        int output;
 
         // parse the input (store operator and digit(s)/variable(s)
 
-        // if operator does not contain AND or OR -> prepare for 1 value
-            // it will be a NOT, a SHIFT, or a direct assignment
-        if (!calculation.contains("AND") && !calculation.contains("OR")) {
+        // if operator does not contain AND, OR, RSHIFT, or LSHIFT -> prepare for 1 value
+            // it will be a NOT or a direct assignment
+        if (!calculation.contains("AND")
+                && !calculation.contains("OR")
+                && !calculation.contains("RSHIFT")
+                && !calculation.contains("LSHIFT")) {
             System.out.println(calculation);
+
+            String numString = "";
+            int num;
+
+            if (calculation.contains("NOT")) {
+                numString = calculation.replace("NOT","");
+                numString = numString.trim();
+                if (!isNumber(numString)) {
+                    num = calculate(numString, inputMap);
+                } else {
+                    num = Integer.parseInt(numString);
+                }
+                output = ~num;
+
+            } else {
+                numString = calculation.trim();
+                if (!isNumber(numString)) {
+                    num = calculate(numString, inputMap);
+                } else {
+                    num = Integer.parseInt(numString);
+                }
+                output = num;
+            }
         }
-            // if value is a number, calculate output
-            // if value is a variable, call the calculate function on it to arrive at a number.
 
-
-        // else prepare for 2 values
-            // it will be an AND or an OR
+        // else prepare for 2 values --- it will be AND, OR, RSHIFT, or LSHIFT
         else {
             System.out.println(calculation);
-        }
-            // if both values are numbers, calculate output
-            // if value a is a variable, call the calculate function on it to arrive at a number.
-            // if value b is a variable, call the calculate function on it to arrive at a number.
 
+            String[] inputs = splitInputs(calculation);
+            String aString = inputs[0];
+            String bString = inputs[1];
+
+            int a;
+            int b;
+
+            // calculate number values if needed...
+            // check if a not number... calculate number if needed, else assign value to int a
+            if (!isNumber(aString)) {
+                a = calculate(aString, inputMap);
+            } else {
+                a = Integer.parseInt(aString);
+            }
+
+            // check if b not number... calculate number if needed, else assign value to int a
+            if (!isNumber(bString)) {
+                b = calculate(bString, inputMap);
+            } else {
+                b = Integer.parseInt(bString);
+            }
+
+            if (calculation.contains("AND")) {
+                output = a&b;
+            } else if (calculation.contains("RSHIFT")) {
+                output = a>>b;
+            } else if (calculation.contains("LSHIFT")) {
+                output = a<<b;
+            } else {
+                output = a|b;
+            }
+
+        }
 
         return output;
+
+    }
+
+    private static String[] splitInputs(String calculation) {
+
+        String[] inputArray;
+        if (calculation.contains("AND")) {
+            inputArray = calculation.split("AND");
+        } else if (calculation.contains("RSHIFT")) {
+            inputArray = calculation.split("RSHIFT");
+        } else if (calculation.contains("LSHIFT")) {
+            inputArray = calculation.split("LSHIFT");
+        } else {
+            inputArray = calculation.split("OR");
+        }
+
+        inputArray[0] = inputArray[0].trim();
+        inputArray[1] = inputArray[1].trim();
+
+        return inputArray;
+    }
+
+    private static boolean isNumber(String input) {
+
+        Pattern numberPattern = Pattern.compile("\\d");
+        Matcher numberMatcher = numberPattern.matcher(input);
+
+        if (numberMatcher.find()) {
+            return true;
+        }
+        return false;
     }
 }
