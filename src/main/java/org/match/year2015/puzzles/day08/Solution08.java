@@ -72,7 +72,11 @@ public class Solution08 {
         int inMemoryChars = 0;
 
         // define patterns
-        Pattern escapePattern = Pattern.compile("\\\\"); // need 4 \s. \\ first escapes the \ from the string, the second \\ escapes it from the regex.
+        // double backslashes
+        Pattern escapePattern = Pattern.compile("\\\\\\\\");
+        // hex
+        Pattern hexPattern = Pattern.compile("\\\\x[a-f][a-f]|\\\\x[0-9][0-9]|\\\\x[a-f][0-9]|\\\\x[0-9][a-f]");
+
 
         for (String line : inputList) {
 
@@ -81,7 +85,9 @@ public class Solution08 {
 
             // matchers
             Matcher matchEscape = escapePattern.matcher(line);
-            long match = matchEscape.results().count();
+            Matcher matchHex = hexPattern.matcher(line);
+            long match = matchHex.results().count();
+            System.out.print(line + " --- ");
             System.out.println(match);
 
 
