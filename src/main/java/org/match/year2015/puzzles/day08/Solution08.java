@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Solution08 {
 
@@ -69,10 +71,22 @@ public class Solution08 {
         int totalChars = 0;
         int inMemoryChars = 0;
 
+        // define patterns
+        Pattern escapePattern = Pattern.compile("\\\\"); // need 4 \s. \\ first escapes the \ from the string, the second \\ escapes it from the regex.
+
+        for (String line : inputList) {
+
+            // add line length to total count
+            totalChars += line.length();
+
+            // matchers
+            Matcher matchEscape = escapePattern.matcher(line);
+            long match = matchEscape.results().count();
+            System.out.println(match);
 
 
 
-
+        }
 
         return totalChars - inMemoryChars;
     }
