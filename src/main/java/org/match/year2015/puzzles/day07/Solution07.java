@@ -121,6 +121,8 @@ public class Solution07 {
         // if digits, use them for the calculation. if variables, call the calculation function on them until
         // they resolve to digits.
 
+        inputMap.put("b", "46065");
+
         answer = calculate(inputMap.get("a"), inputMap);
 
         return answer;
@@ -207,6 +209,7 @@ public class Solution07 {
 
         }
 
+        inputMap.put(key, String.valueOf(output));
         return output;
 
     }
