@@ -65,6 +65,16 @@ public class Solution08 {
      *  hex digits
      *      if yes, look up the char in the ascii table
      *      if not, just count the escaped x?
+     *
+     *
+     *  need to account for...
+     *      - escaped backslashes (with no overlap)
+     *          - "\\" is an escaped backslash
+     *          - "\\\\" is 2 escaped backslashes, but sloppy regex would find 3 matches
+     *          - "\\\"" is 1 escaped backslash, 1 escaped double quote, but sloppy regex
+     *            would find 2 escaped backslash matches
+     *      - hex strings. got the pattern for this handled.
+     *      - escaped quote characters
      */
 
     private static int calculate(List<String> inputList) {
@@ -72,7 +82,7 @@ public class Solution08 {
         int inMemoryChars = 0;
 
         // define patterns
-        // double backslashes
+        // escaped backslashes
         Pattern escapePattern = Pattern.compile("\\\\\\\\");
         // hex
         Pattern hexPattern = Pattern.compile("\\\\x[a-f][a-f]|\\\\x[0-9][0-9]|\\\\x[a-f][0-9]|\\\\x[0-9][a-f]");
@@ -86,7 +96,7 @@ public class Solution08 {
             // matchers
             Matcher matchEscape = escapePattern.matcher(line);
             Matcher matchHex = hexPattern.matcher(line);
-            long match = matchHex.results().count();
+            long match = matchEscape.results().count();
             System.out.print(line + " --- ");
             System.out.println(match);
 
