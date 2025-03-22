@@ -31,8 +31,11 @@ public class Solution08 {
         // calculate and print answer
         int answer = calculate(inputList);
 
-        System.out.println("answer = " + answer);
+        System.out.println("first answer = " + answer);
 
+        answer = calculate2(inputList);
+
+        System.out.println("second answer = " + answer);
     }
 
     /**
@@ -77,34 +80,78 @@ public class Solution08 {
      *      - escaped quote characters
      */
 
+
+    private static Pattern hexPattern = Pattern.compile("\\\\x[a-f][a-f]|\\\\x[0-9][0-9]|\\\\x[a-f][0-9]|\\\\x[0-9][a-f]");
+    private static Pattern anythingElsePattern = Pattern.compile("\\\\.");
+
     private static int calculate(List<String> inputList) {
         int totalChars = 0;
         int inMemoryChars = 0;
 
-        // define patterns
-        // escaped backslashes
-        Pattern escapePattern = Pattern.compile("\\\\\\\\");
-        // hex
-        Pattern hexPattern = Pattern.compile("\\\\x[a-f][a-f]|\\\\x[0-9][0-9]|\\\\x[a-f][0-9]|\\\\x[0-9][a-f]");
 
 
         for (String line : inputList) {
 
-            // add line length to total count
+            // add line length to total literal count
             totalChars += line.length();
 
-            // matchers
-            Matcher matchEscape = escapePattern.matcher(line);
-            Matcher matchHex = hexPattern.matcher(line);
-            long match = matchEscape.results().count();
-            System.out.print(line + " --- ");
-            System.out.println(match);
+//            System.out.println("starting line: " + line);
 
+            // strip leading and ending double quotes
+            String unquotedLine = line.substring(1,line.length()-1);
+//            System.out.println("without quotes: " + unquotedLine);
+
+            // match and replace hex
+            Matcher matchHex = hexPattern.matcher(unquotedLine);
+            String noHexLine = matchHex.replaceAll("4");
+//            System.out.println("without hex: " + noHexLine);
+
+            // match and replace any other escaped characters
+            Matcher matchAnythingElse = anythingElsePattern.matcher(noHexLine);
+            String finalLine = matchAnythingElse.replaceAll("1");
+//            System.out.println("final line: " + finalLine);
+
+            // add reduced line length to total in memory count
+            inMemoryChars += finalLine.length();
+
+        }
+        return totalChars - inMemoryChars;
+    }
+
+    private static int calculate2(List<String> inputList) {
+        int literalLength = 0;
+        int encodedLiteralLength = 0;
+
+        for (String line : inputList) {
+            // add starting line length to literalLength
+            literalLength += line.length();
+
+            System.out.println("starting line: " + line);
+
+            // find hex and replace with number of replacement chars
+            Matcher matchHex = hexPattern.matcher(line);
+            String augmentedHex = matchHex.replaceAll("55555");
+            System.out.println("augmentedHex:  " + augmentedHex);
+
+            // replace everything else needed between the starting and ending quotes
+            Matcher matchEverythingElse = anythingElsePattern.matcher(augmentedHex);
+            String augmentedEverythingElse = matchEverythingElse.replaceAll("4444");
+            System.out.println("everything else :" + augmentedEverythingElse);
+
+            // replace starting and ending quotes
+            String finalLine = augmentedEverythingElse.replaceAll("\"", "333");
+            System.out.println("finalLine: " + finalLine);
+
+
+            encodedLiteralLength += finalLine.length();
 
 
         }
 
-        return totalChars - inMemoryChars;
+
+
+
+        return encodedLiteralLength - literalLength;
     }
 
 
